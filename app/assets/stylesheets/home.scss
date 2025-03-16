@@ -1,0 +1,94 @@
+#container:has(#hero) {
+    height: calc(100svh - var(--nav-height));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8em;
+}
+
+#hero {
+    display: grid;
+    grid-template-columns: 10em 1fr;
+    row-gap: 4em;
+    column-gap: 2em;
+    width: fit-content;
+    margin: 0 auto;
+
+    @media (max-width: 660px) {
+        grid-template-columns: 6em 1fr;
+        row-gap: 2em;
+    }
+
+    img {
+        width: 100%;
+    }
+
+    & > div:has(p) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: fit-content;
+
+        p {
+            font-size: 2em;
+            hight: fit-content;
+            margin: 0;
+
+            @media (max-width: 660px) {
+                font-size: 1.2em;
+            }
+        }
+    }
+}
+
+#cta {
+    position: relative;
+
+    & #cta-link {
+        color: #33d6a6;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        border: 1px solid transparent;
+        width: 100%;
+    }
+
+    font-size: 5rem;
+    @media (max-width: 660px) {
+        font-size: 3rem;
+    }
+}
+/*
+#cta,
+#cta > a {
+    color: #33d6a6;
+    font-size: 5rem;
+    text-align: center;
+    text-decoration: none;
+
+
+} */
+
+#cta-underline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1em;
+}
+
+#gradient-canvas {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    opacity: 0.1;
+    mix-blend-mode: darken;
+    pointer-events: none;
+
+    --gradient-color-1: #33d6a6;
+    --gradient-color-2: #a633d6;
+    --gradient-color-3: #338eda;
+    --gradient-color-4: #ec3750;
+}

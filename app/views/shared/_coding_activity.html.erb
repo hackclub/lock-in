@@ -1,0 +1,18 @@
+<% hb = user.active_heartbeat %>
+
+<% if hb %>
+<div style="display: flex; flex-direction: row; align-items: center; gap: 0.5em;">
+    <%= image_tag "/transparent-cat.gif", width: 42 %>
+
+    <p style="display: inline-flex; flex-direction: column; gap: 0.5em; text-align: center;">
+        <span><%= current_user == user ? "You're" : "#{user.username} is" %> working on <%= hb.project %>, <%= hb.category %> <%= hb.language %> in <%= hb.editor %></span>
+        <span style="font-size: 0.8em"><%= hb.entity %></span>
+    </p>
+</div>
+<% else %>
+    <p><%= current_user == user ? "You're not" : "#{user.username} isn't" %> coding right now</p>
+<% end %>
+
+<% if hb&.project != current_user.user_presence.project %>
+    <p>HEY. LOCK IN.</p>
+<% end %>

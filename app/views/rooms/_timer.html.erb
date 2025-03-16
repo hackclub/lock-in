@@ -1,0 +1,73 @@
+<% if current_user.room.started_at.blank? %>
+    <p style="font-size: 1.5em">Waiting for someone else to join you!</p>
+<% else %>
+    <p id="timer" style="font-size: 1.5em"></p>
+
+    <script>
+      let interval;
+
+      function startTimer() {
+          const startTs = new Date("<%= current_user.room.started_at.iso8601 %>").getTime()
+        const endTs = startTs + (60 * 60 * 1_000) // An hour later
+        const timerElement = document.getElementById("timer")
+
+        // Start of copy from StackOverflow
+        var ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+        var tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+        var teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+
+        function convert_millions(num) {
+          if (num >= 1000000) {
+            return convert_millions(Math.floor(num / 1000000)) + " million " + convert_thousands(num % 1000000);
+          } else {
+            return convert_thousands(num);
+          }
+        }
+
+        function convert_thousands(num) {
+          if (num >= 1000) {
+            return convert_hundreds(Math.floor(num / 1000)) + " thousand " + convert_hundreds(num % 1000);
+          } else {
+            return convert_hundreds(num);
+          }
+        }
+
+        function convert_hundreds(num) {
+          if (num > 99) {
+            return ones[Math.floor(num / 100)] + " hundred " + convert_tens(num % 100);
+          } else {
+            return convert_tens(num);
+          }
+        }
+
+        function convert_tens(num) {
+          if (num < 10) return ones[num];
+          else if (num >= 10 && num < 20) return teens[num - 10];
+          else {
+            return tens[Math.floor(num / 10)] + " " + ones[num % 10];
+          }
+        }
+
+        function convert(num) {
+          if (num == 0) return "zero";
+          else return convert_millions(num);
+        }
+        // End of copy from StackOverflow
+
+        function updateTimer() {
+          console.log('updaitng timer')
+          const remaining = Math.round((endTs - new Date()) / 1_000 / 60)
+          timerElement.textContent = `${convert(remaining > 0 ? remaining : 0)} minutes to go`
+        }
+        updateTimer()
+        if (interval) {
+          clearInterval(interval)
+        }
+        interval = setInterval(updateTimer, 1_000)
+      }
+
+      startTimer()
+      document.addEventListener("turbo:load", startTimer)
+      document.addEventListener("turbo:frame-render", startTimer)
+    </script>
+<% end %>

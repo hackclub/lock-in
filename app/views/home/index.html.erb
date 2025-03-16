@@ -1,0 +1,55 @@
+<%= turbo_frame_tag "modal", target: "_top" %>
+
+<div id="container">
+    <div id="hero">
+        <%= image_tag "/hero-step-imgs/step1.png" %>
+        <div>
+            <p>
+                Choose something to focus on.
+                </br />
+                Anything wakatime-able!
+            </p>
+        </div>
+
+        <%= image_tag "/hero-step-imgs/step2.png" %>
+        <div>
+            <p>
+                Hop in a call
+                <br />
+                with another hack clubber
+                </br />
+                LOCK. TF. IN.
+            </p>
+        </div>
+
+        <%= image_tag "/hero-step-imgs/step3.png" %>
+        <div>
+            <p>
+                At the end of the session,
+                <br />
+                spin for free stickers!
+            </p>
+        </div>
+    </div>
+
+    <div id="cta" style="margin: 0 auto;">
+        <% show_new_room_modal = current_user.present? && current_user.user_presence.blank? %>
+        <%= link_to current_user.present? ? current_user.user_presence.present? ? room_path : new_room_path : slack_auth_path, data: { turbo_frame: show_new_room_modal ? 'modal' : nil }, id: "cta-link" do %>
+            <%= render "shared/outline", margin: 32, colour: "#33d6a6" do %>
+                Lock In
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<h2>Active Rooms</h2>
+<ul style="list-style: none; padding: 0;">
+  <% Room.all.each do |room| %>
+      <li>
+          <p><time datetime="<%= room.created_at %>"><%= time_ago_in_words room.created_at %></time> (<%= room.users.count %>/<%= room.max_users %> users)</p>
+          <% room.users.each do |user| %>
+              <%= render "shared/user_mention", user: %>
+          <% end %>
+      </li>
+  <% end %>
+</ul>

@@ -1,0 +1,6 @@
+<% colour = "#000" if local_assigns[:colour].nil? %>
+
+<div class="rough-outline" data-margin="<%= margin %>" data-colour="<%= colour %>">
+    <%= yield %>
+    <svg class="outline" />
+</div>

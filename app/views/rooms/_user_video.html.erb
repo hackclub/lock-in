@@ -1,0 +1,41 @@
+<% local ||= false %>
+
+<div class="video-container">
+    <p class="username-label" style="line-height: 0; display: flex; flex-direction: column; gap: 1em; align-items: center;">
+        <span><%= user_presence.user.username %></span>
+        <span style="font-size: 0.8em;"><%= current_user == user_presence.user ? "You" : "They" %> committed to working on <%= user_presence.description %></span>
+    </p>
+
+    <%= content_tag "div", data: { tg_tour: local ? "<span>Look, it's you!</span>" : nil }, style: "display: flex; flex-direction: row; gap: 1rem; position: relative;" do %>
+        <%= video_tag "", id: local ? "local-video" : "remote-video-#{user_presence.peer_id}", autoplay: true, playsinline: true, muted: local %>
+        <%= video_tag "", id: local ? "local-screen" : "remote-screen-#{user_presence.peer_id}", style: "display: none;", autoplay: true, playsinline: true, muted: true %>
+        <svg style="position: absolute; width: calc(100% + 2rem); height: calc(100% + 2rem); translate: -1rem -1rem" id="video-border-<%= user_presence.peer_id %>" />
+    <% end %>
+
+    <%= turbo_frame_tag "coding-activity-#{user_presence.peer_id}", class: "wakatime-panel", data: { tg_tour: local ? "<span>This will show in what file and language you/others are currently coding. *Currently* meaning, like, now. It's live.</span>" : nil }, style: "width: fit-content" do %>
+        <p>Loading...</p>
+    <% end %>
+
+    <script>
+      // function draw() {
+      //   console.log("loaded", document.querySelector("video"))
+      //   const svg = document.getElementById("video-border-<%= user_presence.peer_id %>")
+      //   let prevPath;
+      //   const draw = () => {
+      //     const rc = rough.svg(svg);
+      //     svg.innerHTML = '';
+      //     prevPath = rc.rectangle(16, 16, svg.clientWidth - 32, svg.clientHeight - 32, {
+      //       strokeWidth: 4,
+      //       roughness: 3,
+      //     });
+      //     prevPath.setAttribute("stroke-linecap", "round")
+      //     svg.appendChild(prevPath);
+      //   }
+      //   draw()
+      //   new ResizeObserver(draw).observe(svg)
+      // }
+
+      // draw()
+      // document.addEventListener("turbo:load", draw)
+    </script>
+</div>

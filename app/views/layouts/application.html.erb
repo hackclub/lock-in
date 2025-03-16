@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LockIn</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <%= javascript_include_tag "rough.js" %>
+    <%= javascript_include_tag "tsparticles.js" %>
+
+    <% if content_for? :head %>
+      <%= yield :head %>
+    <% end %>
+
+    <script>
+
+    function drawOutlines() {
+      const roughOutlineContainers = document.querySelectorAll(".rough-outline")
+
+      roughOutlineContainers.forEach((el, idx) => {
+        const innerSvgMarginWidth = Number(el.dataset.margin);
+        const colour = el.dataset.colour;
+
+        el.style.margin = innerSvgMarginWidth + "px"
+        // Change this line to find DIRECT child SVG only
+        const svg = el.querySelector(":scope > svg.outline")
+
+        if (svg) {
+          const draw = () => {
+            svg.style.height = `calc(100% + ${innerSvgMarginWidth * 4}px)`
+            svg.style.width = `calc(100% + ${innerSvgMarginWidth * 4}px)`
+            svg.style.translate = `-${innerSvgMarginWidth * 2}px -${innerSvgMarginWidth * 2}px`
+            svg.innerHTML = ""
+
+            for (let i = 0; i < 3; i++) {
+              const rc = rough.svg(svg)
+              const path = rc.rectangle(innerSvgMarginWidth, innerSvgMarginWidth, svg.clientWidth - innerSvgMarginWidth * 2, svg.clientHeight - innerSvgMarginWidth * 2, {
+                strokeWidth: 4,
+                roughness: 3,
+                stroke: colour
+              });
+              path.setAttribute("stroke-linecap", "round")
+              path.style.display = i === 0 ? "block" : "none"
+              svg.appendChild(path)
+            }
+          }
+
+          let i = 0
+          setInterval(() => {
+            svg.children[i % svg.children.length].style.display = "none"
+            svg.children[++i % svg.children.length].style.display = "block"
+
+          }, 100)
+
+          // Re-enable the ResizeObserver for proper sizing
+          setTimeout(draw, 500)
+          new ResizeObserver(draw).observe(el)
+        }
+      })
+    }
+
+      drawOutlines()
+      document.addEventListener("turbo:load", drawOutlines)
+      document.addEventListener("turbo:frame-render", drawOutlines)
+    </script>
+  </head>
+
+  <body>
+    <%= render "shared/nav" %>
+
+    <main>
+        <%= yield %>
+    </main>
+
+    <% flash.each do |name, msg| %>
+        <%= render "shared/flash", name:, msg: %>
+    <% end %>
+
+    <script type="module">
+      import { Gradient } from "gradient";
+
+     	const gradient = new Gradient();
+     	gradient.initGradient("#gradient-canvas");
+
+     	window
+    		.matchMedia("(prefers-color-scheme: dark)")
+    		.addEventListener("change", () => gradient.initGradient("#gradient-canvas"));
+    </script>
+    <canvas id="gradient-canvas" data-transition-in></canvas>
+
+    <!-- <footer>
+        <div class="container">
+        <p>
+            Build <%= Rails.application.config.git_version %> from <%= time_ago_in_words(Rails.application.config.server_start_time) %> ago.
+            (DB: <%= pluralize(QueryCount::Counter.counter, "query") %>, <%= QueryCount::Counter.counter_cache %> cached)
+            (CACHE: <%= cache_stats[:hits] %> hits, <%= cache_stats[:misses] %> misses)
+        </p>
+        </div>
+    </footer> -->
+  </body>
+</html>

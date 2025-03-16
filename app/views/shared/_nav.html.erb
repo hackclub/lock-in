@@ -1,0 +1,18 @@
+<nav>
+    <div id="parent">
+        <%= image_tag "/flag-orpheus-top.svg", id: "logo" %>
+
+        <div style="display: flex; align-items: center; gap: 1em;">
+            <% if current_user %>
+                <p>
+                    <%= link_to "🎉", confetti_path, data: { turbo_method: :post }, style: "text-decoration: none;" %>
+                    Signed in as <%= current_user.username %>
+                </p>
+
+                <%= link_to signout_path, data: { turbo_method: :delete }, id: "logout", class: 'btn btn-danger' do %>
+                    <%= image_tag "/icons/door-leave.svg", width: 24 %>
+                <% end %>
+            <% end %>
+        </div>
+    </div>
+</nav>

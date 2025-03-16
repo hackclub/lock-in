@@ -1,0 +1,13 @@
+<% content_for :head do %>
+    <%= javascript_include_tag "peer.js" %>
+
+    <% unless current_user.user_pref.had_room_tour %>
+        <%= javascript_include_tag "tourguide.js" %>
+        <%= stylesheet_link_tag "tourguide.css" %>
+    <% end %>
+<% end %>
+
+<div id="room-content">
+    <%= render "room_content", data: { controller: "room" } %>
+</div>
+<%# turbo_frame_tag "room_content", data: { controller: "room" },  src: partial_content_room_path %>

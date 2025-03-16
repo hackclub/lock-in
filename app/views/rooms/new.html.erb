@@ -1,0 +1,78 @@
+<% uuid = SecureRandom.uuid %>
+<% modal_margin = 24 %>
+
+<%= turbo_frame_tag "modal" do %>
+    <dialog id="modal" style="overflow: visible;">
+        <%= render "shared/outline", margin: modal_margin do %>
+        <!-- <button autofocus>Close</button> -->
+        <!-- <p>This modal dialog has a groovy backdrop!</p> -->
+
+        <!-- <button>Show the dialog</button> -->
+        <%= form_with model: Room.new, url: room_path do |form| %>
+            <div style="display: flex; flex-direction: column; gap: 0.5em;">
+                <div class="field">
+                    <%= form.label :description, "I'm going to be working on" %>
+                    <%= form.text_field :description, placeholder: "adding turbo streams!" %>
+                </div>
+
+                <div class="field">
+                    <%= form.label :project %>
+                    <%= form.select :project, @projects.map { |p| [p.titleize, p] } %>
+                </div>
+
+                <div class="field">
+                    <button type="submit">
+                        <%= render "shared/outline", margin: 8 do %>
+                            Join!
+                        <% end %>
+                    </button>
+                </div>
+            </div>
+        <% end %>
+
+        <%= image_tag "/modal-footer.png", id: "modal-footer", style: "margin: -16px -#{modal_margin}px; z-index: -1; width: calc(100% + #{modal_margin}px * 2)" %>
+
+        <% end %>
+    </dialog>
+
+
+<script>
+
+    document.addEventListener("turbo:frame-render", (event) => {
+      const dialog = event.target.querySelector("dialog");
+      const innerSvgMarginWidth = 16;
+
+      dialog.addEventListener("click", (e) => console.log(e))
+
+      if (event.target.id === "modal") {
+        if (dialog) dialog.showModal();
+      }
+
+      /*
+
+      const svg = document.querySelector("#flash-modal")
+      const target = document.getElementById("flash-<%= uuid %>")
+
+      // svg.setAttribute("width", `${target.clientWidth + innerSvgMarginWidth * 2}px`);
+
+      for (let i = 0; i < 10; i++) {
+        const rc = rough.svg(svg);
+
+        const node = rc.rectangle(innerSvgMarginWidth, innerSvgMarginWidth, svg.clientWidth - innerSvgMarginWidth * 2, svg.clientHeight - innerSvgMarginWidth * 2, {
+          stroke: "#33d6a6", strokeWidth: 3, roughness: 4
+        });
+        node.setAttribute("stroke-linecap", "round")
+        node.style.display = i === 0 ? "block" : "none"
+        svg.appendChild(node);
+      }
+
+      let i = 0
+      setInterval(() => {
+        svg.children[i % svg.children.length].style.display = "none"
+        svg.children[++i % svg.children.length].style.display = "block"
+
+      }, 100)
+      */
+    });
+  </script>
+<% end %>

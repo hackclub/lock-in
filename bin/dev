@@ -1,0 +1,2 @@
+bin/bundle exec sidekiq &
+bin/rails server

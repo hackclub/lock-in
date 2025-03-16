@@ -1,0 +1,34 @@
+body {
+    /* padding-top: var(--nav-height); */
+
+    nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: var(--nav-height);
+        /* background: rgba(255, 255, 255, 0.25); */
+        /* border-bottom: 2px solid rgba(255, 255, 255, 0.5); */
+        backdrop-filter: blur(32px);
+        margin: 0 2rem;
+
+        z-index: 10;
+
+        & #parent {
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            max-width: 75rem;
+            margin: 0 auto;
+        }
+
+        & #logo {
+            height: 80%;
+        }
+    }
+}
+
+#logout {
+    filter: invert(27%) sepia(67%) saturate(2311%) hue-rotate(330deg)
+        brightness(97%) contrast(91%);
+}

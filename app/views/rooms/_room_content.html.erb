@@ -1,0 +1,204 @@
+<% if current_user %> <!-- unless current_user.onboarded -->
+    <!-- <script src="https://unpkg.com/@sjmc11/tourguidejs/dist/tour.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+    <!-- <link rel="stylesheet" href="https://unpkg.com/@sjmc11/tourguidejs/dist/css/tour.min.css"> -->
+<% end %>
+
+<%= turbo_frame_tag "timer" do %>
+    <%= render "timer" %>
+<% end %>
+
+<div id="videos-container">
+    <%= render "user_video", local: true, user_presence: current_user.user_presence %>
+
+    <div id="remote-videos-container">
+        <% peer_presences.each do |peer_presence| %>
+            <%= render "user_video", user_presence: peer_presence %>
+        <% end %>
+    </div>
+</div>
+
+<div id="btn-container">
+    <div role="button" class="imgbtn" onclick="shareScreen()" data-tg-tour="<span>You're encouraged to share your screen - you'll get a 1.1x mult if you do!</span>">
+        <%= image_tag "/laptop.png", height: 64 %>
+        <span>Share screen</span>
+    </div>
+    <div role="button" class="imgbtn">
+        <%= image_tag "/confused-rac.png", height: 64 %>
+        <span>Poke</span>
+    </div>
+    <a class="imgbtn" href="slack://channel?team=T0266FRGM&id=U03DFNYGPCN">
+        <%= image_tag "/rac-gun.png", height: 64 %>
+        <span>Report</span>
+    </a>
+
+    <div
+        role="button"
+        class="imgbtn"
+        id="enable-notifs"
+        onclick="Notification.requestPermission(); this.style.display = 'none';"
+        style="display: none;"
+    >
+        <%= image_tag "/notif-rac.png", height: 64 %>
+        <span>Enable notifs</span>
+    </div>
+
+    <%= link_to leave_room_path, data: { turbo_method: :post, tg_tour: "<span>This disconnects you from the call...</span>" }, role: "button", class: "imgbtn" do  %>
+        <%= image_tag "/rac-leave.png", height: 64 %>
+        <span>Leave room</span>
+    <% end %>
+
+    <!--
+    <%= link_to room_path, data: { turbo_method: :delete, turbo_confirm: 'Are you sure? This will boot everyone out', tg_tour: "<span>...while this ends it for everyone!</span>" }, role: "button", class: "imgbtn" do %>
+        <%= image_tag "/rac-end.png", height: 64 %>
+        <span>End call</span>
+    <% end %>
+    -->
+</div>
+
+<script>
+  let stream, screenStream, peer, myScreenCall;
+  const peerPresences = <%= raw peer_presences.map(&:peer_id).to_json %>;
+
+  document.addEventListener("turbo:load", () => {
+    const notifEnableButton = document.getElementById("enable-notifs")
+    if (Notification.permission !== "granted") {
+        notifEnableButton.style.display = "flex"
+    }
+
+    document.querySelector("a[href='<%= leave_room_path %>']").addEventListener("turbo:click", (e) => {
+      e.preventDefault()
+      console.log({e})
+    })
+
+    document.addEventListener("turbolinks:before-visit", (e) => {
+      console.log("turbolinks:before-visit")
+    })
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((s) => {
+        stream = s
+        peer = new Peer("<%= @peer_id %>", {
+        host: "0.peerjs.com",
+        port: 443,
+        secure: true,
+        ...<%= raw @turn_creds.to_json %>
+        })
+        peer.on('error', console.error);
+
+        navigator.mediaDevices.enumerateDevices()
+          .then((devices) => {
+            console.log({devices})
+          })
+
+        const localVideo = document.getElementById("local-video")
+        localVideo.srcObject = stream
+
+        // Register event listeners to react to calls
+        peer.on("call", (call) => {
+        console.log("Incoming call", call)
+        call.answer(stream)
+        console.log("Answered incoming call", call)
+
+        call.on("stream", (remoteStream) => {
+            call.stream = remoteStream
+            console.log("Incoming stream from call2", call, remoteStream)
+
+            const videoOrStream = call.metadata.type === "screen" ? "screen" : "video"
+            const el = document.getElementById(`remote-${videoOrStream}-${call.peer}`)
+            if (el) {
+                el.srcObject = remoteStream
+                el.style.display = "block"
+            }
+
+            call.on("close", () => console.log("Tnhe qukoemte connection wqs lcoed M:("))
+        })
+        })
+
+        peer.on('open', (id) => {
+        // Call everyone in the call
+        peerPresences.forEach((peerId) => {
+            const call = peer.call(peerId, stream, {
+            metadata: { type: "video" }
+            });
+            console.log("Okay, I called", peerId, call, stream);
+            call.on('error', (error) => {
+            console.log(error);
+            });
+
+            call.on("stream", (remoteStream) => {
+            call.stream = remoteStream
+            console.log("Incoming stream from call2", call, remoteStream)
+
+            const videoOrStream = call.metadata.type === "screen" ? "screen" : "video"
+            const el = document.getElementById(`remote-${videoOrStream}-${call.peer}`)
+            if (el) {
+                el.srcObject = remoteStream
+                el.style.display = "block"
+            }
+
+            // remoteStream.on("close", () => el.style.display = "none")
+            })
+        });
+        });
+
+        <% unless current_user.user_pref.had_room_tour %>
+          const endTour = () =>
+            fetch("<%= tour_end_room_path %>", { method: "POST", headers: { "X-CSRF-Token": "<%= session[:_csrf_token] %>" } });
+
+          setTimeout(() => {
+            const tg = new tourguide.TourGuideClient()
+            tg.onFinish(endTour)
+            tg.start()
+          }, 1000)
+        <% end %>
+    })
+
+    window.shareScreen = async function() {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: {
+                cursor: "always",
+            },
+            audio: false
+        });
+
+        const localScreen = document.getElementById("local-screen")
+        localScreen.srcObject = screenStream
+        localScreen.style.display = "block"
+
+        // Listen for "ended" on each screen track so we can immediately stop sharing
+        screenStream.getVideoTracks().forEach((track) => {
+        track.addEventListener("ended", () => {
+            console.log("--------->>>> Screenshare track ended")
+            if (myScreenCall) {
+            myScreenCall.close();
+            }
+            localScreen.style.display = "none"
+
+            // Also broadcast a message letting remote peers know we stopped screensharing
+            fetch("/room/screenshare-ended", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+            });
+        })
+        })
+
+        peerPresences.forEach((peerId) => {
+        myScreenCall = peer.call(peerId, screenStream, { metadata: { type: "screen" } } );
+
+        myScreenCall.on("error", (err) => console.error("Screen share call error:", err));
+        });
+    }
+  })
+
+  document.addEventListener("userjoin", ({ detail }) => {
+      new Notification(`${detail.username} just joined your call!`);
+  })
+
+  function refreshCodingActivities() {
+    fetch("<%= coding_activity_refresh_room_path %>", { headers: { "Accept": 'text/vnd.turbo-stream.html', "X-CSRF-Token": "<%= session[:_csrf_token] %>" } })
+        .then(response => response.text())
+        .then(html => Turbo.renderStreamMessage(html));
+  }
+  refreshCodingActivities()
+  setInterval(refreshCodingActivities, 10_000)
+</script>

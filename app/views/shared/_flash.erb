@@ -1,0 +1,37 @@
+<% uuid = Random.uuid %>
+
+<div class="flash-message <%= name %>" id="flash-<%= uuid %>" onclick="this.parentNode.removeChild(this)">
+    <div class="container">
+        <%= msg %>
+        <svg class="outline" style="height: calc(100% + 64px); width: calc(100% + 64px); translate: -32px -32px;" />
+    </div>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    const innerSvgMarginWidth = 16;
+
+    const svg = document.querySelector("#flash-<%= uuid %> .outline")
+    const target = document.getElementById("flash-<%= uuid %>")
+
+    // svg.setAttribute("width", `${target.clientWidth + innerSvgMarginWidth * 2}px`);
+
+    for (let i = 0; i < 10; i++) {
+      const rc = rough.svg(svg);
+
+      const node = rc.rectangle(innerSvgMarginWidth, innerSvgMarginWidth, svg.clientWidth - innerSvgMarginWidth * 2, svg.clientHeight - innerSvgMarginWidth * 2, {
+        stroke: "#33d6a6", strokeWidth: 3, roughness: 4
+      });
+      node.setAttribute("stroke-linecap", "round")
+      node.style.display = i === 0 ? "block" : "none"
+      svg.appendChild(node);
+    }
+
+    let i = 0
+    setInterval(() => {
+      svg.children[i % svg.children.length].style.display = "none"
+      svg.children[++i % svg.children.length].style.display = "block"
+
+    }, 100)
+  })
+</script>
