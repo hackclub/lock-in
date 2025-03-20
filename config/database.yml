@@ -87,9 +87,10 @@ test:
 production:
   primary:
     <<: *default
-    database: lock_in_production
-    username: lock_in
-    password: <%= ENV["LOCK_IN_DATABASE_PASSWORD"] %>
+    url: <%= ENV['LOCK_IN_DATABASE_URL'] %>
+    # database: lock_in_production
+    # username: lock_in
+    # password: <%= ENV["LOCK_IN_DATABASE_PASSWORD"] %>
   wakatime:
     adapter: postgresql
     encoding: unicode
