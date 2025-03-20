@@ -57,7 +57,7 @@
 </div>
 
 <script>
-  let stream, screenStream, peer, myScreenCall;
+  let stream, screenStream, peer, myScreenCall, muted;
   const peerPresences = <%= raw peer_presences.map(&:peer_id).to_json %>;
 
   document.addEventListener("turbo:load", () => {
@@ -73,6 +73,22 @@
 
     document.addEventListener("turbolinks:before-visit", (e) => {
       console.log("turbolinks:before-visit")
+    })
+
+    // Push to talk
+    document.addEventListener("keydown", ({ keyCode }) => {
+      if (keyCode === 32) {
+        muted = true
+        stream.getAudioTracks()[0].enabled = true;
+        console.log("Talk!")
+      }
+    })
+    document.addEventListener("keyup", ({ keyCode }) => {
+      if (keyCode === 32) {
+        muted = false
+        stream.getAudioTracks()[0].enabled = false;
+        console.log("no more talking")
+      }
     })
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((s) => {
