@@ -31,6 +31,7 @@
 
         &#local-video {
             scale: -1 1; /* Je déteste seeing myself flipped */
+            transition: filter 0.1s;
         }
     }
 }

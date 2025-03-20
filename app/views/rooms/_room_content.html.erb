@@ -61,6 +61,8 @@
   const peerPresences = <%= raw peer_presences.map(&:peer_id).to_json %>;
 
   document.addEventListener("turbo:load", () => {
+    const localVideo = document.getElementById("local-video")
+
     const notifEnableButton = document.getElementById("enable-notifs")
     if (Notification.permission !== "granted") {
         notifEnableButton.style.display = "flex"
@@ -80,19 +82,22 @@
       if (keyCode === 32) {
         muted = true
         stream.getAudioTracks()[0].enabled = true;
+        localVideo.style.filter = "grayscale(0.5)"
         console.log("Talk!")
       }
     })
     document.addEventListener("keyup", ({ keyCode }) => {
       if (keyCode === 32) {
         muted = false
-        stream.getAudioTracks()[0].enabled = false;
+        localVideo.style.filter = "grayscale(0)"
         console.log("no more talking")
       }
     })
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((s) => {
         stream = s
+        stream.getAudioTracks()[0].enabled = false;
+
         peer = new Peer("<%= @peer_id %>", {
         host: "0.peerjs.com",
         port: 443,
@@ -106,7 +111,6 @@
             console.log({devices})
           })
 
-        const localVideo = document.getElementById("local-video")
         localVideo.srcObject = stream
 
         // Register event listeners to react to calls
