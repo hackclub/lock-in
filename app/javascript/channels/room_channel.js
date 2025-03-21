@@ -24,7 +24,7 @@ consumer.subscriptions.create("RoomChannel", {
         .createContextualFragment(data.html);
       document.getElementById("remote-videos-container").prepend(fragment);
 
-      if (Turbo) {
+      if (typeof Turbo !== "undefined") {
         fetch("/room/timer/refresh", {
           headers: { Accept: "text/vnd.turbo-stream.html" },
         })

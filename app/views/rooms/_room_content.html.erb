@@ -215,7 +215,7 @@
   })
 
   function refreshCodingActivities() {
-    if (Turbo) {
+    if (typeof Turbo !== 'undefined') {
       fetch("<%= coding_activity_refresh_room_path %>", { headers: { "Accept": 'text/vnd.turbo-stream.html', "X-CSRF-Token": "<%= session[:_csrf_token] %>" } })
           .then(response => response.text())
           .then(html => Turbo.renderStreamMessage(html));
