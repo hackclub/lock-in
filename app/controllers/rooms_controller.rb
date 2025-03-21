@@ -63,7 +63,7 @@ class RoomsController < ApplicationController
     # current_user.user_presence.destroy
     # ActionCable.server.broadcast("peer", { type: "CALL_LEFT", peer_id: })
 
-    # redirect_to root_path, notice: "You left the call!"
+    redirect_to root_path, notice: "You left the call!"
   end
 
   def destroy
