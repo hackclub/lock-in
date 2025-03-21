@@ -82,7 +82,7 @@ class RoomsController < ApplicationController
   end
 
   def refresh_coding_activity
-    redirect_to root_path, notice: "The room has ended" unless current_user.room.present?
+    return redirect_to root_path, notice: "The room has ended" unless current_user.room.present?
 
     respond_to do |format|
       format.turbo_stream do
