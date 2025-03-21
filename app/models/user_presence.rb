@@ -8,7 +8,7 @@ class UserPresence < ApplicationRecord
   validate :room_is_not_full
 
   before_create :generate_peer_id
-  after_destroy :close_empty_room
+  # after_destroy :close_empty_room
 
   private
 
@@ -27,6 +27,6 @@ class UserPresence < ApplicationRecord
   end
 
   def close_empty_room
-    room.destroy! if room.users.count.zero?
+    room&.destroy! if room&.users&.count&.zero?
   end
 end
