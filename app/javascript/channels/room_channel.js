@@ -63,6 +63,14 @@ consumer.subscriptions.create("RoomChannel", {
       videoElementToRemove.remove();
     } else if (data.type === "CALL_DESTROYED") {
       location.href = "/";
+    } else if (data.type === "MIC_ON") {
+      document.dispatchEvent(
+        new CustomEvent("micon", { detail: { peerId: data.peer_id } }),
+      );
+    } else if (data.type === "MIC_OFF") {
+      document.dispatchEvent(
+        new CustomEvent("micoff", { detail: { peerId: data.peer_id } }),
+      );
     }
   },
 });

@@ -56,7 +56,9 @@
     -->
 </div>
 
-<script>
+<script type="module">
+  import consumer from "channels/consumer";
+
   let stream, screenStream, peer, myScreenCall, muted;
   const peerPresences = <%= raw peer_presences.map(&:peer_id).to_json %>;
 
@@ -78,20 +80,43 @@
     })
 
     // Push to talk
-    document.addEventListener("keydown", ({ keyCode }) => {
-      if (keyCode === 32) {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === " " && !muted) {
         muted = true
         stream.getAudioTracks()[0].enabled = true;
-        localVideo.style.filter = "grayscale(0)"
+        // localVideo.style.filter = "grayscale(0)"
         console.log("Talk!")
+
+        consumer.subscriptions.subscriptions
+          .find((a) => a.identifier.includes("RoomChannel"))
+          .send({ type: "MIC_ON" })
+
+        e.preventDefault()
       }
     })
-    document.addEventListener("keyup", ({ keyCode }) => {
-      if (keyCode === 32) {
+    document.addEventListener("keyup", ({ key }) => {
+      if (key === " ") {
         muted = false
-        localVideo.style.filter = "grayscale(0.65)"
+        // localVideo.style.filter = "grayscale(0.65)"
         console.log("no more talking")
+
+        consumer.subscriptions.subscriptions
+          .find((a) => a.identifier.includes("RoomChannel"))
+          .send({ type: "MIC_OFF" })
       }
+    })
+
+    document.addEventListener("micon", ({ detail }) => {
+      const pid = detail.peerId
+
+      const id = pid === "<%= @peer_id %>" ? "local-video" : `remote-video-${pid}`
+      document.getElementById(id).style.filter = "grayscale(0)"
+    })
+    document.addEventListener("micoff", ({ detail }) => {
+      const pid = detail.peerId
+
+      const id = pid === "<%= @peer_id %>" ? "local-video" : `remote-video-${pid}`
+      document.getElementById(id).style.filter = "grayscale(0.65)"
     })
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((s) => {

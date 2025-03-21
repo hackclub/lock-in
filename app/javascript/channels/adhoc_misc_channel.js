@@ -1,7 +1,7 @@
 import consumer from "channels/consumer";
 
 consumer.subscriptions.create("AdhocMiscChannel", {
-  connected() {
+  connected({ reconnected }) {
     // Called when the subscription is ready for use on the server
   },
 

@@ -29,6 +29,8 @@
     video {
         width: 100%;
 
+        filter: grayscale(0.65);
+
         &#local-video {
             scale: -1 1; /* Je déteste seeing myself flipped */
             transition: filter 0.1s;
