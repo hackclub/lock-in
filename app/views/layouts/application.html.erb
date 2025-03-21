@@ -20,6 +20,7 @@
 
     function drawOutlines() {
       const roughOutlineContainers = document.querySelectorAll(".rough-outline")
+      const baseMargin = 8;
 
       roughOutlineContainers.forEach((el, idx) => {
         const innerSvgMarginWidth = Number(el.dataset.margin);
@@ -31,14 +32,14 @@
 
         if (svg) {
           const draw = () => {
-            svg.style.height = `calc(100% + ${innerSvgMarginWidth * 4}px)`
-            svg.style.width = `calc(100% + ${innerSvgMarginWidth * 4}px)`
-            svg.style.translate = `-${innerSvgMarginWidth * 2}px -${innerSvgMarginWidth * 2}px`
+            svg.style.height = `calc(100% + ${innerSvgMarginWidth * 4}px + ${baseMargin * 2}px)`
+            svg.style.width = `calc(100% + ${innerSvgMarginWidth * 4}px + ${baseMargin * 2}px)`
+            svg.style.translate = `-${innerSvgMarginWidth * 2 + baseMargin}px -${innerSvgMarginWidth * 2 + baseMargin}px`
             svg.innerHTML = ""
 
             for (let i = 0; i < 3; i++) {
               const rc = rough.svg(svg)
-              const path = rc.rectangle(innerSvgMarginWidth, innerSvgMarginWidth, svg.clientWidth - innerSvgMarginWidth * 2, svg.clientHeight - innerSvgMarginWidth * 2, {
+              const path = rc.rectangle(innerSvgMarginWidth + baseMargin, innerSvgMarginWidth + baseMargin, svg.clientWidth - innerSvgMarginWidth * 2 - baseMargin * 2, svg.clientHeight - innerSvgMarginWidth * 2 - baseMargin * 2, {
                 strokeWidth: 4,
                 roughness: 3,
                 stroke: colour
