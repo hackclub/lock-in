@@ -82,6 +82,8 @@ class RoomsController < ApplicationController
   end
 
   def refresh_coding_activity
+    redirect_to root_path, notice: "The room has ended" unless current_user.room.present?
+
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: current_user.room.user_presences.map { |up| turbo_stream.replace("coding-activity-#{up.peer_id}", partial: "shared/coding_activity", locals: { user: up.user }) }
