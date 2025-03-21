@@ -215,9 +215,13 @@
   })
 
   function refreshCodingActivities() {
-    fetch("<%= coding_activity_refresh_room_path %>", { headers: { "Accept": 'text/vnd.turbo-stream.html', "X-CSRF-Token": "<%= session[:_csrf_token] %>" } })
-        .then(response => response.text())
-        .then(html => Turbo.renderStreamMessage(html));
+    if (Turbo) {
+      fetch("<%= coding_activity_refresh_room_path %>", { headers: { "Accept": 'text/vnd.turbo-stream.html', "X-CSRF-Token": "<%= session[:_csrf_token] %>" } })
+          .then(response => response.text())
+          .then(html => Turbo.renderStreamMessage(html));
+    } else {
+      console.warn("Was going to refreshCodingActivities but Turbo isn't present.")
+    }
   }
   refreshCodingActivities()
   setInterval(refreshCodingActivities, 10_000)

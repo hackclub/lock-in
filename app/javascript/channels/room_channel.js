@@ -24,11 +24,17 @@ consumer.subscriptions.create("RoomChannel", {
         .createContextualFragment(data.html);
       document.getElementById("remote-videos-container").prepend(fragment);
 
-      fetch("/room/timer/refresh", {
-        headers: { Accept: "text/vnd.turbo-stream.html" },
-      })
-        .then((response) => response.text())
-        .then((html) => Turbo.renderStreamMessage(html));
+      if (Turbo) {
+        fetch("/room/timer/refresh", {
+          headers: { Accept: "text/vnd.turbo-stream.html" },
+        })
+          .then((response) => response.text())
+          .then((html) => Turbo.renderStreamMessage(html));
+      } else {
+        console.warn(
+          "Was going to fetch(/room/timer/refresh) but Turbo isn't present.",
+        );
+      }
 
       // Create a new video element to display the remote user's stream.
       // const videoContainer = document.querySelector(".video-container");
