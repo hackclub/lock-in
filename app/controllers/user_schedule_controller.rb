@@ -2,7 +2,7 @@ class UserScheduleController < ApplicationController
 
   def create
     zone = Time.find_zone(params[:tz])
-    res = get_parsed_schedule params[:schedule]
+    res = get_parsed_schedule params[:schedule], zone
 
     if res["schedule"]
       res["schedule"].split(",").map { |s|
@@ -23,12 +23,13 @@ class UserScheduleController < ApplicationController
 
   private
 
-  def get_parsed_schedule(text_description)
+  def get_parsed_schedule(text_description, tz)
+    puts "tz.now:", tz.now.strftime('%H:%M')
     response = HTTP.post("https://ai.hackclub.com/chat/completions", body: JSON.dump({
       "messages": [
         {
           "role": "system",
-          "content": "given the following schedule description, extract the schedule in the format {\"schedule\":\"hh:mm-hh:mm,hh:mm-hh:mm,...\"}. return your answer with no other text than that. for example, \"i'm free today from 9 to 5 except an hour at 1pm\" should return {\"schedule\":\"09:00-13:00,14:00-17:00\"}. if there is ambiguity in the times return {\"error\":\"ambiguous\"}. if they try to provide you with a day's schedule other than today return {\"error\":\"not-today\"}."
+          "content": "given the following schedule description, extract the schedule in the format {\"schedule\":\"hh:mm-hh:mm,hh:mm-hh:mm,...\"}. return your answer with no other text than that. for example, \"i'm free today from 9 to 5 except an hour at 1pm\" should return {\"schedule\":\"09:00-13:00,14:00-17:00\"}. if there is ambiguity in the times return {\"error\":\"ambiguous\"}. if they try to provide you with a day's schedule other than today return {\"error\":\"not-today\"}. For context, the user's current time is #{tz.now.strftime('%H:%M')}, so if they say something like 'I'm free until 3' and it's 07:15, you know the schedule can be 07:15-15:00."
         },
         {
           "role": "user",
