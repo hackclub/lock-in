@@ -1,4 +1,4 @@
-class ScheduleController < ApplicationController
+class UserScheduleController < ApplicationController
 
   def create
     zone = Time.find_zone(params[:tz])

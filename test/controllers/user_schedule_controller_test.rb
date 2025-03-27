@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ScheduleControllerTest < ActionDispatch::IntegrationTest
+class UserScheduleControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

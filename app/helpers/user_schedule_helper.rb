@@ -1,2 +1,2 @@
-module ScheduleHelper
+module UserScheduleHelper
 end
