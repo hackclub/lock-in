@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_one :room, through: :user_presence
   has_one :user_pref
   has_many :heartbeats, primary_key: :slack_uid, foreign_key: :user_id
+  has_many :user_schedule
 
   after_create :create_pref
 
@@ -66,6 +67,10 @@ class User < ApplicationRecord
       .order("MAX(time) DESC")
       .pluck(:project)
       .select { |p| !["<<LAST_PROJECT>>", ""].include? p }
+  end
+
+  def schedules
+    UserSchedule.find_by(user: self)
   end
 
   # def project_names

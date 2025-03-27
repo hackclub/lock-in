@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     get "timer/refresh", to: "rooms#refresh_timer"
   end
 
+  post "schedule", to: "schedule#create"
+
   root to: "home#index"
   post "/confetti", to: "home#confetti"
 end

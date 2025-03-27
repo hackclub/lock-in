@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_14_152507) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_27_195113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,6 +71,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_152507) do
     t.index ["user_id"], name: "index_user_presences_on_user_id"
   end
 
+  create_table "user_schedules", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "start", precision: nil
+    t.datetime "finish", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_schedules_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "slack_uid", null: false
     t.string "email", null: false
@@ -90,4 +99,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_152507) do
   add_foreign_key "user_prefs", "users"
   add_foreign_key "user_presences", "rooms"
   add_foreign_key "user_presences", "users"
+  add_foreign_key "user_schedules", "users"
 end

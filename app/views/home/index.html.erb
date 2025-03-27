@@ -40,6 +40,22 @@
             <% end %>
         <% end %>
     </div>
+
+    <%= form_with url: schedule_path do |form| %>
+      <%= form.label :schedule, "When are you free today?" %>
+      <%= form.text_field :schedule %>
+
+      <%= form.label :phone_number, "What's your phone number?" %>
+      <%= form.text_field :phone_number %>
+
+      <%= form.text_field :tz, id: "tz-input", hidden: true %>
+
+      <%= form.submit "Call me when someone is available" %>
+    <% end %>
+
+    <script>
+      document.querySelector("input#tz-input").value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    </script>
 </div>
 
 <h2>Active Rooms</h2>
