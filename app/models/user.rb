@@ -69,6 +69,29 @@ class User < ApplicationRecord
       .select { |p| !["<<LAST_PROJECT>>", ""].include? p }
   end
 
+  def holler
+    return if phone.nil?
+
+    client = Twilio::REST::Client.new(ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"])
+
+    call = client
+           .api
+           .v2010
+           .calls
+           .create(
+             from: '+14323094225',
+             to: phone,
+             twiml: "<?xml version='1.0' encoding='UTF-8'?>
+  <Response>
+    <Say voice='man'>Hey #{username}, it's Lock in from Hack Club. Your schedule matched with another Hack Clubber. It's time to lock in! Be quick.</Say>
+    <Hangup/>
+  </Response>
+",
+             status_callback: 'https://92c8-73-119-115-16.ngrok-free.app/twilio/holler-answered',
+             status_callback_method: 'POST'
+           )
+  end
+
   # def project_names
   #   heartbeats.select(:project).distinct.pluck(:project)
   # end
