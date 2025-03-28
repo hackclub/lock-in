@@ -1,6 +1,8 @@
 class Room < ApplicationRecord
   acts_as_paranoid
 
+  MAX_ROOM_SIZE = 2
+
   has_many :user_presences, dependent: :destroy
   has_many :users, through: :user_presences
 
