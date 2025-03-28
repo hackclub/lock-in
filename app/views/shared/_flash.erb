@@ -9,6 +9,7 @@
 
 <script>
   document.addEventListener("turbo:load", () => {
+    const flashType = "<%= name %>"
     const innerSvgMarginWidth = 16;
 
     const svg = document.querySelector("#flash-<%= uuid %> .outline")
@@ -20,7 +21,7 @@
       const rc = rough.svg(svg);
 
       const node = rc.rectangle(innerSvgMarginWidth, innerSvgMarginWidth, svg.clientWidth - innerSvgMarginWidth * 2, svg.clientHeight - innerSvgMarginWidth * 2, {
-        stroke: "#33d6a6", strokeWidth: 3, roughness: 4
+        stroke: flashType == "error" ? "#ec3750" : "#33d6a6", strokeWidth: 3, roughness: 4
       });
       node.setAttribute("stroke-linecap", "round")
       node.style.display = i === 0 ? "block" : "none"
