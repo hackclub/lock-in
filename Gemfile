@@ -76,3 +76,7 @@ gem "query_count", "~> 1.1"
 gem "paranoia", "~> 3.0"
 
 gem "sidekiq", "~> 7.3"
+
+gem "twilio-ruby", "~> 7.5"
+
+gem "sidekiq-cron", "~> 2.2"
