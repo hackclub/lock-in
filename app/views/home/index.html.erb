@@ -41,21 +41,32 @@
         <% end %>
     </div>
 
-    <%= form_with url: schedule_path do |form| %>
-      <%= form.label :schedule, "When are you free today?" %>
-      <%= form.text_field :schedule %>
+    <% if current_user %>
+        <%= form_with url: schedule_path do |form| %>
+            <div class="field">
+                <%= form.label :schedule, "I'm free today" %>
+                <%= form.text_field :schedule, placeholder: "until 7 except for an hour at 1" %>
+            </div>
 
-      <%= form.label :phone_number, "What's your phone number?" %>
-      <%= form.text_field :phone_number %>
+            <div class="field">
+                <%= form.label :phone_number, "My phone number is" %>
+                <%= form.text_field :phone_number, placeholder: "+1 (432) 309-4225" %>
+            </div>
 
-      <%= form.text_field :tz, id: "tz-input", hidden: true %>
+            <%= form.text_field :tz, id: "tz-input", hidden: true %>
 
-      <%= form.submit "Call me when someone is available" %>
+            <div class="field">
+                <%= render "shared/outline", margin: 0, thickness: :thin do %>
+                    <%= form.submit "Call me when someone is available", style: "padding: 8px;" %>
+                <% end %>
+            </div>
+        <% end %>
+
+        <script>
+          document.querySelector("input#tz-input").value =
+            Intl.DateTimeFormat().resolvedOptions().timeZone;
+        </script>
     <% end %>
-
-    <script>
-      document.querySelector("input#tz-input").value = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    </script>
 </div>
 
 <h2>Active Rooms</h2>
