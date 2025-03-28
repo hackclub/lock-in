@@ -1,8 +1,19 @@
+require "twilio-ruby"
+
 class UserScheduleController < ApplicationController
 
   def create
+    return head :unauthorized if current_user.nil?
+
     zone = Time.find_zone(params[:tz])
     res = get_parsed_schedule params[:schedule], zone
+    phone = params[:phone_number].gsub /[\s()-]/, ""
+
+
+    unless phone.starts_with? "+"
+      flash[:error] = "Phone numbers need a country code at the start"
+      return redirect_to root_path
+    end
 
     if res["schedule"]
       res["schedule"].split(",").map { |s|
