@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   post "schedule", to: "user_schedule#create"
 
+  post "twilio/holler-answered", to: "users#holler_answered"
+
   root to: "home#index"
   post "/confetti", to: "home#confetti"
 end
