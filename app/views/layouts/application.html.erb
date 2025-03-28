@@ -25,6 +25,7 @@
       roughOutlineContainers.forEach((el, idx) => {
         const innerSvgMarginWidth = Number(el.dataset.margin);
         const colour = el.dataset.colour;
+        const thickness = el.dataset.thickness
 
         el.style.margin = innerSvgMarginWidth + "px"
         // Change this line to find DIRECT child SVG only
@@ -40,7 +41,7 @@
             for (let i = 0; i < 3; i++) {
               const rc = rough.svg(svg)
               const path = rc.rectangle(innerSvgMarginWidth + baseMargin, innerSvgMarginWidth + baseMargin, svg.clientWidth - innerSvgMarginWidth * 2 - baseMargin * 2, svg.clientHeight - innerSvgMarginWidth * 2 - baseMargin * 2, {
-                strokeWidth: 4,
+                strokeWidth: thickness,
                 roughness: 3,
                 stroke: colour
               });
