@@ -1,0 +1,3 @@
+check_schedules_job:
+  cron: "* * * * *"
+  class: "CheckSchedulesJob"
