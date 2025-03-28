@@ -1,6 +1,10 @@
+<% margin = 8 if local_assigns[:margin].nil? %>
 <% colour = "#000" if local_assigns[:colour].nil? %>
+<% thickness = :regular if local_assigns[:thickness].nil? %>
 
-<div class="rough-outline" data-margin="<%= margin %>" data-colour="<%= colour %>">
+<% thickness_value = thickness == :thick ? 8 : thickness == :regular ? 4 : thickness == :thin ? 2 : 0 %>
+
+<div class="rough-outline" data-margin="<%= margin %>" data-colour="<%= colour %>" data-thickness="<%= thickness_value %>">
     <%= yield %>
     <svg class="outline" />
 </div>

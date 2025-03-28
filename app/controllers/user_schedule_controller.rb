@@ -12,6 +12,7 @@ class UserScheduleController < ApplicationController
         start = zone.parse(start_raw).utc
         finish = zone.parse(finish_raw).utc
 
+        current_user.update(phone:)
         UserSchedule.create(user: current_user, start:, finish:)
       }
     else
