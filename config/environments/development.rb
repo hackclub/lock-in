@@ -3,7 +3,7 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   config.hosts = [
     "localhost:3000",
-    "d324-73-119-115-185.ngrok-free.app",
+    "92c8-73-119-115-16.ngrok-free.app",
     "5.161.100.52:34224"
   ]
 
