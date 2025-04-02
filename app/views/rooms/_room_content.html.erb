@@ -250,4 +250,26 @@
   }
   refreshCodingActivities()
   setInterval(refreshCodingActivities, 10_000)
+
+  function screengrab() {
+    const video = document.getElementById("local-video");
+
+    const canvas = document.createElement('canvas');
+    canvas.height = video.videoHeight;
+    canvas.width = video.videoWidth;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    fetch("/screenshot", {
+      headers: { "Content-Type": 'application/json', "X-CSRF-Token": "<%= session[:_csrf_token] %>" },
+      method: "POST",
+      body: JSON.stringify({ data_url: canvas.toDataURL("image/png") })
+    })
+        .then(response => response.text())
+        .then(html => Turbo.renderStreamMessage(html));
+  }
+
+  setInterval(() => {
+    console.log(screengrab())
+  }, 60_000)
 </script>
