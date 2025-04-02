@@ -99,6 +99,11 @@ class RoomsController < ApplicationController
     end
   end
 
+  def screenshot
+    data = JSON.parse(request.raw_post)
+    Screenshot.create(user: current_user, data_url: data["data_url"])
+  end
+
   private
 
   def generate_cf_turn_creds

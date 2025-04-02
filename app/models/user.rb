@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_one :user_pref
   has_many :heartbeats, primary_key: :slack_uid, foreign_key: :user_id
   has_many :user_schedules
+  has_many :screenshots
 
   after_create :create_pref
 
