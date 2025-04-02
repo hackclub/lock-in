@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_27_230727) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_02_180340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_27_230727) do
     t.datetime "deleted_at"
     t.datetime "started_at"
     t.index ["deleted_at"], name: "index_rooms_on_deleted_at"
+  end
+
+  create_table "screenshots", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "data_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_screenshots_on_user_id"
   end
 
   create_table "user_prefs", force: :cascade do |t|
@@ -97,6 +105,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_27_230727) do
     t.index ["slack_uid"], name: "index_users_on_slack_uid", unique: true
   end
 
+  add_foreign_key "screenshots", "users"
   add_foreign_key "user_prefs", "users"
   add_foreign_key "user_presences", "rooms"
   add_foreign_key "user_presences", "users"
