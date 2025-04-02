@@ -86,7 +86,7 @@ form[action="/schedule"] {
     align-items: center;
     justify-content: center;
     input#schedule {
-        width: max(14em, fit-content);
+        width: 14em;
     }
     /* max-width: 60ch; */
     margin: 0 auto;
