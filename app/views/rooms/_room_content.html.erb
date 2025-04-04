@@ -81,7 +81,7 @@
       if (e.key === " " && !muted) {
         muted = true
         stream.getAudioTracks()[0].enabled = true;
-        // localVideo.style.filter = "grayscale(0)"
+        localVideo.style.filter = "grayscale(0)"
         console.log("Talk!")
 
         consumer.subscriptions.subscriptions
@@ -94,7 +94,7 @@
     document.addEventListener("keyup", ({ key }) => {
       if (key === " ") {
         muted = false
-        // localVideo.style.filter = "grayscale(0.65)"
+        localVideo.style.filter = "grayscale(0.65)"
         console.log("no more talking")
 
         consumer.subscriptions.subscriptions
