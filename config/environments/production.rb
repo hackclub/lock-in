@@ -4,6 +4,7 @@ Rails.application.configure do
   config.hosts = [
     "localhost:3000",
     "6be4-73-119-115-16.ngrok-free.app",
+    "lockin.hackclub.com",
     "5.161.100.52:34224"
   ]
 
