@@ -6,7 +6,7 @@
         <span style="font-size: 0.8em;"><%= current_user == user_presence.user ? "You" : "They" %> committed to working on <%= user_presence.description %></span>
     </p>
 
-    <%= content_tag "div", data: { tg_tour: local ? "<span>Look, it's you!</span>" : nil }, style: "display: flex; flex-direction: row; gap: 1rem; position: relative;" do %>
+    <%= content_tag "div", data: { tg_tour: local ? "<span>Look, it's you! Hold your space bar to talk.</span>" : nil }, style: "display: flex; flex-direction: row; gap: 1rem; position: relative;" do %>
         <%= content_tag "div", id: local ? "local-video-container" : "remote-video-#{user_presence.peer_id}-container", style: "flex: 1 0 0; width: fit-content;" do %>
             <%= render "shared/outline", margin: 0 do %>
                 <%= video_tag "", id: local ? "local-video" : "remote-video-#{user_presence.peer_id}", autoplay: true, playsinline: true, muted: local %>
