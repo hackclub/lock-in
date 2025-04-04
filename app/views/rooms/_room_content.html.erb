@@ -11,11 +11,9 @@
 <div id="videos-container">
     <%= render "user_video", local: true, user_presence: current_user.user_presence %>
 
-    <div id="remote-videos-container">
-        <% peer_presences.each do |peer_presence| %>
-            <%= render "user_video", user_presence: peer_presence %>
-        <% end %>
-    </div>
+    <% peer_presences.each do |peer_presence| %>
+        <%= render "user_video", user_presence: peer_presence %>
+    <% end %>
 </div>
 
 <div id="btn-container">
@@ -160,7 +158,9 @@
 
             const videoOrStream = call.metadata.type === "screen" ? "screen" : "video"
             const el = document.getElementById(`remote-${videoOrStream}-${call.peer}`)
+            const elContainer = document.getElementById(`remote-${videoOrStream}-${call.peer}-container`)
             if (el) el.srcObject = remoteStream;
+            if (elContainer) elContainer.style.display = "block"
 
             call.on("close", () => console.log(`The connection to peer ${call.peer} was closed`))
           })
@@ -183,10 +183,9 @@
 
             const videoOrStream = call.metadata.type === "screen" ? "screen" : "video"
             const el = document.getElementById(`remote-${videoOrStream}-${call.peer}`)
-            if (el) {
-                el.srcObject = remoteStream
-                el.style.display = "block"
-            }
+            const elContainer = document.getElementById(`remote-${videoOrStream}-${call.peer}-container`)
+            if (el) el.srcObject = remoteStream
+            if (elContainer) elContainer.style.display = "block"
 
             // remoteStream.on("close", () => el.style.display = "none")
             })
@@ -214,8 +213,9 @@
         });
 
         const localScreen = document.getElementById("local-screen")
+        const localScreenContainer = document.getElementById("local-screen-container")
         localScreen.srcObject = screenStream
-        localScreen.style.display = "block"
+        localScreenContainer.style.display = "block"
 
         // Listen for "ended" on each screen track so we can immediately stop sharing
         screenStream.getVideoTracks().forEach((track) => {
@@ -224,7 +224,7 @@
             if (myScreenCall) {
             myScreenCall.close();
             }
-            localScreen.style.display = "none"
+            localScreenContainer.style.display = "none"
 
             // Also broadcast a message letting remote peers know we stopped screensharing
             fetch("/room/screenshare-ended", {
@@ -266,7 +266,7 @@
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    fetch("/screenshot", {
+    fetch("<%= screenshot_room_path %>", {
       headers: { "Content-Type": 'application/json', "X-CSRF-Token": "<%= session[:_csrf_token] %>" },
       method: "POST",
       body: JSON.stringify({ data_url: canvas.toDataURL("image/png") })

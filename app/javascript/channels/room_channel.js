@@ -22,7 +22,7 @@ consumer.subscriptions.create("RoomChannel", {
       const fragment = document
         .createRange()
         .createContextualFragment(data.html);
-      document.getElementById("remote-videos-container").prepend(fragment);
+      document.getElementById("videos-container").prepend(fragment);
 
       if (typeof Turbo !== "undefined") {
         fetch("/room/timer/refresh", {

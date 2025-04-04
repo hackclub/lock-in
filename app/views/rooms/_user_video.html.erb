@@ -7,11 +7,17 @@
     </p>
 
     <%= content_tag "div", data: { tg_tour: local ? "<span>Look, it's you!</span>" : nil }, style: "display: flex; flex-direction: row; gap: 1rem; position: relative;" do %>
-        <%= render "shared/outline", margin: 0 do %>
-            <%= video_tag "", id: local ? "local-video" : "remote-video-#{user_presence.peer_id}", autoplay: true, playsinline: true, muted: local %>
+        <%= content_tag "div", id: local ? "local-video-container" : "remote-video-#{user_presence.peer_id}-container", style: "flex: 1 0 0; width: fit-content;" do %>
+            <%= render "shared/outline", margin: 0 do %>
+                <%= video_tag "", id: local ? "local-video" : "remote-video-#{user_presence.peer_id}", autoplay: true, playsinline: true, muted: local %>
+            <% end %>
         <% end %>
 
-        <%= video_tag "", id: local ? "local-screen" : "remote-screen-#{user_presence.peer_id}", style: "display: none;", autoplay: true, playsinline: true, muted: true %>
+        <%= content_tag "div", id: local ? "local-screen-container" : "remote-screen-#{user_presence.peer_id}-container", style: "display: none; flex: 1 0 0; width: fit-content;" do %>
+            <%= render "shared/outline", margin: 0 do %>
+                <%= video_tag "", id: local ? "local-screen" : "remote-screen-#{user_presence.peer_id}", autoplay: true, playsinline: true, muted: true %>
+            <% end %>
+        <% end %>
     <% end %>
 
     <%= turbo_frame_tag "coding-activity-#{user_presence.peer_id}", class: "wakatime-panel", data: { tg_tour: local ? "<span>This will show in what file and language you/others are currently coding. *Currently* meaning, like, now. It's live.</span>" : nil }, style: "width: fit-content" do %>
