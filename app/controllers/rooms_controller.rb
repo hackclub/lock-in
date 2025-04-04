@@ -44,6 +44,7 @@ class RoomsController < ApplicationController
       notice = "You've created a room"
     end
 
+    room.notify
     redirect_to room_path, notice: notice
   end
 
