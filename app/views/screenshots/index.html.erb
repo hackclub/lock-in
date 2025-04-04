@@ -1,0 +1,5 @@
+<% @users.each do |user| %>
+    <p>
+        <a href="/screenshots/<%= user.id %>"><%= user.username %> (<%= user.email %>)</a>
+    </p>
+<% end %>

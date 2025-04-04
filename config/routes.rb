@@ -27,6 +27,7 @@ Rails.application.routes.draw do
 
   post "twilio/holler-answered", to: "users#holler_answered"
 
+  get "screenshots", to: "screenshots#index"
   get "/screenshots/:id", to: "screenshots#show"
 
   root to: "home#index"
