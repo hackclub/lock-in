@@ -62,7 +62,6 @@
   let stream, screenStream, peer, myScreenCall, muted;
   const peerPresences = <%= raw peer_presences.map(&:peer_id).to_json %>;
 
-  document.addEventListener("turbo:load", () => {
     const localVideo = document.getElementById("local-video")
 
     const notifEnableButton = document.getElementById("enable-notifs")
@@ -140,23 +139,31 @@
 
         // Register event listeners to react to calls
         peer.on("call", (call) => {
-        console.log("Incoming call", call)
-        call.answer(stream)
-        console.log("Answered incoming call", call)
+          console.log("Incoming call", call)
+          call.answer(stream)
+          console.log("Answered incoming call", call)
 
-        call.on("stream", (remoteStream) => {
+          call.on("stream", async (remoteStream) => {
+            console.log("call on stream 1", "Incoming stream from call2", {peerPresences}, call, remoteStream)
+
             call.stream = remoteStream
-            console.log("Incoming stream from call2", call, remoteStream)
+
+            if (!peerPresences.includes(call.peer)) {
+              peerPresences.push(call.peer)
+              if (!document.querySelector(`user-video-${call.peer}`)) {
+                console.log(`A new peer called us (${call.peer} @ ${performance.now()}). I'm inserting and connecting a new user video partial.`)
+                const newUserVideo = await fetch(`<%= user_video_room_path %>?peerid=${call.peer}`, { headers: { "X-CSRF-Token": "<%= session[:_csrf_token] %>" } }).then((d) => d.text());
+                document.getElementById("videos-container").insertAdjacentHTML("beforeend", newUserVideo);
+                drawOutlines()
+              }
+            }
 
             const videoOrStream = call.metadata.type === "screen" ? "screen" : "video"
             const el = document.getElementById(`remote-${videoOrStream}-${call.peer}`)
-            if (el) {
-                el.srcObject = remoteStream
-                el.style.display = "block"
-            }
+            if (el) el.srcObject = remoteStream;
 
-            call.on("close", () => console.log("Tnhe qukoemte connection wqs lcoed M:("))
-        })
+            call.on("close", () => console.log(`The connection to peer ${call.peer} was closed`))
+          })
         })
 
         peer.on('open', (id) => {
@@ -233,7 +240,6 @@
         myScreenCall.on("error", (err) => console.error("Screen share call error:", err));
         });
     }
-  })
 
   document.addEventListener("userjoin", ({ detail }) => {
       new Notification(`${detail.username} just joined your call!`);

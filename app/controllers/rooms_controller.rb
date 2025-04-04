@@ -104,6 +104,15 @@ class RoomsController < ApplicationController
     Screenshot.create(user: current_user, data_url: data["data_url"])
   end
 
+  def user_video
+    user_presence = UserPresence.find_by(peer_id: params["peerid"])
+
+    puts "nsrtoarestsr"
+    return head :not_found if user_presence.nil?
+
+    render partial: "user_video", locals: { user_presence: user_presence }
+  end
+
   private
 
   def generate_cf_turn_creds

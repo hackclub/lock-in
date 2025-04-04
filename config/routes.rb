@@ -19,13 +19,13 @@ Rails.application.routes.draw do
     post "tour/restart", to: "rooms#restart_tour"
     get "coding-activity/refresh", to: "rooms#refresh_coding_activity"
     get "timer/refresh", to: "rooms#refresh_timer"
+    post "screenshot", to: "rooms#screenshot"
+    get "user-video", to: "rooms#user_video"
   end
 
   post "schedule", to: "user_schedule#create"
 
   post "twilio/holler-answered", to: "users#holler_answered"
-
-  post "/screenshot", to: "rooms#screenshot"
 
   root to: "home#index"
   post "/confetti", to: "home#confetti"
