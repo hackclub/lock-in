@@ -1,0 +1,10 @@
+class ScreenshotsController < ApplicationController
+  before_action :authenticate_user!
+
+  def show
+    return head :unauthorized unless %w(malted@malted.dev max@maxwofford.com).include?(current_user.email)
+
+    @user = User.find_by(id: params[:id])
+    @screenshots = Screenshot.where(user: @user)
+  end
+end

@@ -1,0 +1,13 @@
+<h1>Screenshots for <%= @user.username %></p>
+
+<% @screenshots.group_by{ |s| s.created_at.strftime("%Y-%m-%d") }.each do |day, sss| %>
+    <h2><%= day %></h2>
+    <div style="display: grid;  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); width: 100%;">
+        <% sss.each do |ss| %>
+            <div style="display: flex; flex-direction: column; font-size: 1rem;">
+                <img src="<%= ss.data_url %>" width=300 />
+                <p style="margin-top: 0;"><time><%= ss.created_at.strftime("%H:%M:%S") %></time></p>
+            </div>
+        <% end %>
+    </div>
+<% end %>
